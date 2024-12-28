@@ -7,22 +7,22 @@ const workspaceShema = new mongoose.Schema({
   },
   sharedWith: {
     type: sharedUserSchema,
-    default: () => ({})
+    default: () => ({}),
   },
-  folder:[
+  folder: [
     {
-       type: mongoose.Schema.Types.ObjectId,
-       ref: "Folder" 
-    }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Folder",
+    },
   ],
-  form:[
+  form: [
     {
-        type: mongoose.Schema.Types.ObjectId,
-       ref: "File"
-    }
-  ]
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "File",
+    },
+  ],
 });
 
-const Workspace = mongoose.model('Workspace', workspaceShema);
+const Workspace = mongoose.model("Workspace", workspaceShema);
 
 module.exports = Workspace;
