@@ -20,6 +20,12 @@ const workspaceShema = new mongoose.Schema({
       ref: "Folder",
     },
   ],
+  form: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Form",
+    },
+  ],
 });
 
 const Workspace = mongoose.model("Workspace", workspaceShema);
