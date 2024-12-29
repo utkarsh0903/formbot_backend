@@ -2,15 +2,20 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth");
 const Workspace = require("../models/workspace.models");
-const { findOne } = require("../models/user.models");
 const User = require("../models/user.models");
 
 router.post("/create-workspace", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   try {
-    const workspace = await Workspace.findOne({ owner: userId });
-    if (workspace) {
-      return res.status(200).json(workspace);
+    const workspaces = await Workspace.find({
+      $or: [
+        { owner: userId },
+        { "sharedWith.viewMode": userId },
+        { "sharedWith.editMode": userId },
+      ],
+    });
+    if (workspaces.length >= 0) {
+      return res.status(200).json(workspaces);
     }
     const newWorkspace = await Workspace.create({
       owner: userId,
@@ -25,9 +30,9 @@ router.post("/create-workspace", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const workspace = await Workspace.findById(id);
+router.get("/:workSpaceId", async (req, res) => {
+  const { workSpaceId } = req.params;
+  const workspace = await Workspace.findById(workSpaceId);
   if (!workspace) {
     return res.status(400).json({ message: "No workspace found" });
   }
@@ -41,7 +46,7 @@ router.put("/sharedWith/:workspaceId", authMiddleware, async (req, res) => {
   try {
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
-      return res.status(404).json({ message: "Workspace not found" });
+      return res.status(400).json({ message: "Workspace not found" });
     }
     const user = await User.findById(userId);
     if (!user) {
