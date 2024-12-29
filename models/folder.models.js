@@ -3,19 +3,19 @@ const mongoose = require("mongoose");
 const folderSchema = new mongoose.Schema({
   folderName: {
     type: String,
-    required: true,
-    unique: true,
+    required: true
+    // unique: true,
   },
-  folderAccess: [
+//   folderAccess: [
+//     {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Workspace",
+//     },
+//   ],
+  forms: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Workspace",
-    },
-  ],
-  form: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "File",
+      ref: "Form",
     },
   ]
 });
