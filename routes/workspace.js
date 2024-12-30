@@ -13,18 +13,18 @@ router.post("/create-workspace", authMiddleware, async (req, res) => {
         { "sharedWith.viewMode": userId },
         { "sharedWith.editMode": userId },
       ],
-    });
-    if (workspaces.length >= 0) {
-      return res.status(200).json(workspaces);
+    }).populate("owner", "username");
+    if (workspaces.length > 0) {
+      return res.status(200).json({workspace: workspaces});
     }
-    const newWorkspace = await Workspace.create({
-      owner: userId,
-      folder: [],
-      form: [],
-    });
+    const newWorkspace = await Workspace.findOneAndUpdate(
+        { owner: userId },
+        { owner: userId, folder: [], form: [] },
+        { new: true, upsert: true } // Only create if it doesn't exist
+      );
     return res
       .status(200)
-      .json({ message: "Workspace created successfully", newWorkspace });
+      .json({ message: "Workspace created successfully", workspace: newWorkspace });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
