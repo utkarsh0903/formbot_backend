@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const connectDB = require("./config/data");
 const userRoute = require("./routes/user"); 
 const workspaceRoute = require("./routes/workspace");
+const folderRoute = require("./routes/folder");
 const cors = require("cors");
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cors());   //Allows all origins
 app.use(bodyParser.json());
 app.use("/api/user", userRoute);
 app.use("/api/workspace", workspaceRoute);
+app.use("/api/folder", folderRoute);
 
 app.listen(PORT, ()=>{
     console.log(`Server runnning on port ${PORT}`);  
