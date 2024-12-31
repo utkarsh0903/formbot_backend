@@ -7,6 +7,9 @@ const router = express.Router();
 router.post("/create-folder", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { folderName, activeWorkspaceId } = req.body;
+  if( !folderName || !activeWorkspaceId){
+    return res.status(400).json({message: "Missing credentials"});
+  }
   try {
     const activeWorkspace = await Workspace.findById(activeWorkspaceId);
     if (!activeWorkspace) {
@@ -20,11 +23,19 @@ router.post("/create-folder", authMiddleware, async (req, res) => {
         message: "You are not allowed to create folder. View mode only",
       });
     }
+    const isFolderNameUnique = activeWorkspace.folder.some(
+      (folder) => folder.folderName === folderName
+    );
+    if (isFolderNameUnique) {
+      return res.status(400).json({ message: "Folder name should be unique" });
+    }
     const newFolder = await Folder.create({
       folderName,
       form: [],
-      workspace: activeWorkspace._id,
     });
+
+    activeWorkspace.folder.push({ folderName, folderId: newFolder._id });
+    await activeWorkspace.save();
     return res.status(200).json({
       message: "Folder created successfully",
       folder: newFolder,

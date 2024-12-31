@@ -96,12 +96,4 @@ router.put("/sharedWith/:workspaceId", authMiddleware, async (req, res) => {
   }
 });
 
-// router.post("/create-folder", (req, res) => {
-//     const {folderName} = req.body;
-//     if(!folderName){
-//         return res.status(400).json({message: "Folder Name is required"});
-//     }
-
-// })
-
 module.exports = router;

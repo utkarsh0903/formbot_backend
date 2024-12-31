@@ -6,10 +6,6 @@ const folderSchema = new mongoose.Schema({
     required: true,
     // unique: true,
   },
-  workspace: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Workspace",
-  },
   forms: [
     {
       type: mongoose.Schema.Types.ObjectId,
