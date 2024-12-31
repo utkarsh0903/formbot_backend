@@ -6,12 +6,15 @@ const folderSchema = new mongoose.Schema({
     required: true,
     // unique: true,
   },
-  forms: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Form",
-    },
-  ],
+  form: [
+      {
+        formName: String,
+        formId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Form",
+        },
+      },
+    ],
 });
 
 const Folder = mongoose.model("Folder", folderSchema);
