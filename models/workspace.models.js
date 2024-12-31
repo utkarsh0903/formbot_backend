@@ -16,14 +16,20 @@ const workspaceShema = new mongoose.Schema({
   },
   folder: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Folder",
+      folderName: String,
+      folderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Folder",
+      },
     },
   ],
   form: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Form",
+      formName: String,
+      formId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Form",
+      },
     },
   ],
 });
