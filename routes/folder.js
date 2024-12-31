@@ -5,6 +5,15 @@ const Workspace = require("../models/workspace.models");
 const checkUserMode = require("../middlewares/checkUserMode");
 const router = express.Router();
 
+router.get("/:id", authMiddleware, async (req, res) => {
+    const { folderId } = req.params;
+    const folder = await Folder.findById(folderId);
+    if (!folder) {
+        return res.status(400).json({ message: "Folder not found" });
+    }
+    res.status(200).json(folder);
+})
+
 router.post("/create-folder", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { folderName, activeWorkspaceId } = req.body;
