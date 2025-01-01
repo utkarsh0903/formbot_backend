@@ -5,14 +5,18 @@ const Workspace = require("../models/workspace.models");
 const checkUserMode = require("../middlewares/checkUserMode");
 const router = express.Router();
 
-router.get("/:id", authMiddleware, async (req, res) => {
-    const { folderId } = req.params;
+router.get("/:folderId", authMiddleware, async (req, res) => {
+  const { folderId } = req.params;
+  try {
     const folder = await Folder.findById(folderId);
     if (!folder) {
-        return res.status(400).json({ message: "Folder not found" });
+      return res.status(400).json({ message: "Folder not found" });
     }
-    res.status(200).json(folder);
-})
+    return res.status(200).json(folder);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 router.post("/create-folder", authMiddleware, async (req, res) => {
   const userId = req.user.id;
@@ -67,7 +71,7 @@ router.delete("/delete-folder", authMiddleware, async (req, res) => {
     );
     await activeWorkspace.save();
     return res.status(200).json({
-      message: "Folder deleted successfully"
+      message: "Folder deleted successfully",
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

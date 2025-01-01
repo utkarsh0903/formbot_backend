@@ -34,12 +34,16 @@ router.post("/create-workspace", authMiddleware, async (req, res) => {
 });
 
 router.get("/:workSpaceId", async (req, res) => {
-  const { workSpaceId } = req.params;
-  const workspace = await Workspace.findById(workSpaceId);
-  if (!workspace) {
-    return res.status(400).json({ message: "No workspace found" });
+  try {
+    const { workSpaceId } = req.params;
+    const workspace = await Workspace.findById(workSpaceId);
+    if (!workspace) {
+      return res.status(400).json({ message: "No workspace found" });
+    }
+    res.status(200).json({ workspace });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-  res.status(200).json({ workspace });
 });
 
 router.put("/sharedWith/:workspaceId", authMiddleware, async (req, res) => {
