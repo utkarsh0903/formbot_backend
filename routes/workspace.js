@@ -49,14 +49,12 @@ router.get("/:workSpaceId", async (req, res) => {
 router.put("/sharedWith/:workspaceId", authMiddleware, async (req, res) => {
   const { workspaceId } = req.params;
   const { email, mode } = req.body;
-
   try {
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       return res.status(400).json({ message: "Workspace not found" });
     }
     const user = await User.findOne({ email });
-    console.log(user._id.toString());
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }

@@ -27,7 +27,11 @@ router.post("/create-form", authMiddleware, async (req, res) => {
   }
   try {
     const activeWorkspace = await Workspace.findById(activeWorkspaceId);
-    checkUserMode(userId, activeWorkspace);
+    const result = await checkUserMode(userId, activeWorkspace);
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
+    }
     const isFormNameUnique = activeWorkspace.form.some(
       (form) => form.formName === formName
     );
@@ -58,7 +62,11 @@ router.post("/folder/create-form", authMiddleware, async (req, res) => {
   }
   try {
     const activeWorkspace = await Workspace.findById(activeWorkspaceId);
-    checkUserMode(userId, activeWorkspace);
+    const result = await checkUserMode(userId, activeWorkspace);
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
+    }
     const activeFolder = await Folder.findById(activeFolderId);
     const isFormNameUnique = activeFolder.form.some(
       (form) => form.formName === formName

@@ -26,7 +26,11 @@ router.post("/create-folder", authMiddleware, async (req, res) => {
   }
   try {
     const activeWorkspace = await Workspace.findById(activeWorkspaceId);
-    checkUserMode(userId, activeWorkspace);
+    const result = await checkUserMode(userId, activeWorkspace);
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
+    }
     const isFolderNameUnique = activeWorkspace.folder.some(
       (folder) => folder.folderName === folderName
     );
@@ -57,7 +61,11 @@ router.delete("/delete-folder", authMiddleware, async (req, res) => {
   }
   try {
     const activeWorkspace = await Workspace.findById(activeWorkspaceId);
-    checkUserMode(userId, activeWorkspace);
+    const result = await checkUserMode(userId, activeWorkspace);
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: result.message });
+    }
     const folderDetails = activeWorkspace.folder.find(
       (folder) => folder.folderName === folderName
     );
