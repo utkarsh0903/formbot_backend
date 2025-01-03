@@ -19,7 +19,7 @@ router.get("/:formId", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/sharedForm/:formId", async (req, res) => {
+router.get("/:formId/formbot", async (req, res) => {
     try {
       const { formId } = req.params;
       const form = await Form.findById(formId);
