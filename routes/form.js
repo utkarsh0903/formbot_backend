@@ -150,4 +150,64 @@ router.delete("/folder/delete-form", authMiddleware, async (req, res) => {
   }
 });
 
+router.post("/form-content/:formId", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  const { formId } = req.params;
+  const { formTemplate } = req.body;
+  if (!formTemplate) {
+    return res.status(400).json({ message: "Missing Template" });
+  }
+  try {
+    let activeForm = await Form.findById(formId);
+    if (!activeForm) return res.status(400).json({ message: "Form not found" });
+
+    let newFormTemplate = [];
+    formTemplate.forEach(({category, subCategory, label, labelData}) => {
+        const newFormTemplateData = {
+            category,
+            subCategory,
+            label,
+            labelData: labelData || "",
+          };
+          newFormTemplate.push(newFormTemplateData)
+    })
+    activeForm.template = newFormTemplate;
+    await activeForm.save();
+    return res.status(200).json({
+      message: "Form created successfully",
+      form: activeForm,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/responses/:formId", async (req, res) => {
+  const { formId } = req.params;
+  const { userResponses } = req.body;
+  console.log(userResponses);
+  if (!userResponses || !userResponses.username || !userResponses.email || !userResponses.userData) {
+    return res.status(400).json({ message: "Incomplete Data" });
+  }
+  try {
+    let activeForm = await Form.findById(formId);
+    if (!activeForm) return res.status(400).json({ message: "Form not found" });
+    
+    activeForm.responses.push({
+        submittedAt: new Date(),
+        username: userResponses.username,
+        email: userResponses.email,
+        data: userResponses.userData
+    })
+
+    await activeForm.save();
+    return res.status(200).json({
+      message: "Form created successfully",
+      form: activeForm,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+})
+
 module.exports = router;
