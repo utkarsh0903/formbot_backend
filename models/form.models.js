@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const templateSchema = new mongoose.Schema({
-  containerType: {
+  category: {
     type: String,
     enum: ["Bubbles", "Inputs"],
+  },
+  subCategory:{
+    type: String,
+    enum: ["BubbleText", "BubbleImage", "Text", "Number", "Email", "Phone", "Date", "Rating", "Buttons"]
   },
   label: {
     type: String,
