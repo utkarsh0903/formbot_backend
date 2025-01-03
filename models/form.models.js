@@ -5,9 +5,19 @@ const templateSchema = new mongoose.Schema({
     type: String,
     enum: ["Bubbles", "Inputs"],
   },
-  subCategory:{
+  subCategory: {
     type: String,
-    enum: ["BubbleText", "BubbleImage", "Text", "Number", "Email", "Phone", "Date", "Rating", "Buttons"]
+    enum: [
+      "Bubble Text",
+      "Bubble Image",
+      "Text Input",
+      "Number Input",
+      "Email Input",
+      "Phone Input",
+      "Date Input",
+      "Rating Input",
+      "Submit Button",
+    ],
   },
   label: {
     type: String,
@@ -18,7 +28,21 @@ const templateSchema = new mongoose.Schema({
   },
 });
 
-const responseSchema = new mongoose.Schema([String]);
+const dataSchema = new mongoose.Schema({
+  "Text Input": { type: String },
+  "Number Input": { type: String },
+  "Email Input": { type: String },
+  "Phone Input": { type: String },
+  "Date Input": { type: String },
+  "Rating Input": { type: String },
+});
+
+const responseSchema = new mongoose.Schema({
+  submittedAt: Date,
+  username: String,
+  email: String,
+  data: [dataSchema]
+});
 
 const formSchema = new mongoose.Schema({
   formName: {
