@@ -19,6 +19,19 @@ router.get("/:formId", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/sharedForm/:formId", async (req, res) => {
+    try {
+      const { formId } = req.params;
+      const form = await Form.findById(formId);
+      if (!form) {
+        return res.status(400).json({ message: "Form not found" });
+      }
+      res.status(200).json(form);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
 router.post("/create-form", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { formName, activeWorkspaceId } = req.body;
