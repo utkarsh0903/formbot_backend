@@ -29,12 +29,12 @@ const templateSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
-  textInput: { type: String },
-  numberInput: { type: String },
-  emailInput: { type: String },
-  phoneInput: { type: String },
-  dateInput: { type: String },
-  ratingInput: { type: String },
+  "Text Input": { type: String },
+  "Number Input": { type: String },
+  "Email Input": { type: String },
+  "Phone Input": { type: String },
+  "Date Input": { type: String },
+  "Rating Input": { type: String },
 });
 
 const responseSchema = new mongoose.Schema({

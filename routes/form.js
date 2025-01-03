@@ -162,15 +162,15 @@ router.post("/form-content/:formId", authMiddleware, async (req, res) => {
     if (!activeForm) return res.status(400).json({ message: "Form not found" });
 
     let newFormTemplate = [];
-    formTemplate.forEach(({category, subCategory, label, labelData}) => {
-        const newFormTemplateData = {
-            category,
-            subCategory,
-            label,
-            labelData: labelData || "",
-          };
-          newFormTemplate.push(newFormTemplateData)
-    })
+    formTemplate.forEach(({ category, subCategory, label, labelData }) => {
+      const newFormTemplateData = {
+        category,
+        subCategory,
+        label,
+        labelData: labelData || "",
+      };
+      newFormTemplate.push(newFormTemplateData);
+    });
     activeForm.template = newFormTemplate;
     await activeForm.save();
     return res.status(200).json({
@@ -185,20 +185,24 @@ router.post("/form-content/:formId", authMiddleware, async (req, res) => {
 router.post("/responses/:formId", async (req, res) => {
   const { formId } = req.params;
   const { userResponses } = req.body;
-  console.log(userResponses);
-  if (!userResponses || !userResponses.username || !userResponses.email || !userResponses.userData) {
+  if (
+    !userResponses ||
+    !userResponses.username ||
+    !userResponses.email ||
+    !userResponses.userData
+  ) {
     return res.status(400).json({ message: "Incomplete Data" });
   }
   try {
     let activeForm = await Form.findById(formId);
     if (!activeForm) return res.status(400).json({ message: "Form not found" });
-    
+
     activeForm.responses.push({
-        submittedAt: new Date(),
-        username: userResponses.username,
-        email: userResponses.email,
-        data: userResponses.userData
-    })
+      submittedAt: new Date(),
+      username: userResponses.username,
+      email: userResponses.email,
+      data: userResponses.userData,
+    });
 
     await activeForm.save();
     return res.status(200).json({
@@ -208,6 +212,54 @@ router.post("/responses/:formId", async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-})
+});
+
+router.post("/responses/count/:formId", async (req, res) => {
+  const { formId } = req.params;
+  const { counts } = req.body;
+  if (!formId || !counts) {
+    return res
+      .status(400)
+      .json({ message: "Form ID and counts are required." });
+  }
+  try {
+    const activeForm = await Form.findByIdAndUpdate(
+      formId,
+      {
+        visitCount: counts.visitCount,
+        startCount: counts.startCount,
+        submittedCount: counts.submittedCount,
+      },
+      { new: true }
+    );
+
+    if (!activeForm) {
+      return res.status(404).json({ message: "Form not found." });
+    }
+
+    await activeForm.save();
+    return res.status(200).json({
+      visitCount: activeForm.visitCount,
+      startCount: activeForm.startCount,
+      submittedCount: activeForm.submittedCount,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/:formId/responses", authMiddleware, async (req, res) => {
+    try {
+      const { formId } = req.params;
+      const form = await Form.findById(formId);
+      if (!form) {
+        return res.status(400).json({ message: "Form not found" });
+      }
+      res.status(200).json(form);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
 
 module.exports = router;
