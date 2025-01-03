@@ -1,5 +1,25 @@
 const mongoose = require("mongoose");
 
+const templateSchema = new mongoose.Schema({
+  category: {
+    type: String,
+    enum: ["Bubbles", "Inputs"],
+  },
+  subCategory:{
+    type: String,
+    enum: ["BubbleText", "BubbleImage", "Text", "Number", "Email", "Phone", "Date", "Rating", "Buttons"]
+  },
+  label: {
+    type: String,
+  },
+  labelData: {
+    type: String,
+    default: () => "",
+  },
+});
+
+const responseSchema = new mongoose.Schema([String]);
+
 const formSchema = new mongoose.Schema({
   formName: {
     type: String,
@@ -12,13 +32,22 @@ const formSchema = new mongoose.Schema({
   folder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Folder",
+    default: null,
   },
-//   content: [
-//     {
-//       type: String,
-//       enum: ["Bubbles", "Inputs"],
-//     },
-//   ],
+  template: [templateSchema],
+  responses: [responseSchema],
+  visitCount: {
+    type: Number,
+    default: 0,
+  },
+  startCount: {
+    type: Number,
+    default: 0,
+  },
+  submittedCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Form = mongoose.model("Form", formSchema);

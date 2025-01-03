@@ -34,25 +34,27 @@ router.post("/create-workspace", authMiddleware, async (req, res) => {
 });
 
 router.get("/:workSpaceId", async (req, res) => {
-  const { workSpaceId } = req.params;
-  const workspace = await Workspace.findById(workSpaceId);
-  if (!workspace) {
-    return res.status(400).json({ message: "No workspace found" });
+  try {
+    const { workSpaceId } = req.params;
+    const workspace = await Workspace.findById(workSpaceId);
+    if (!workspace) {
+      return res.status(400).json({ message: "No workspace found" });
+    }
+    res.status(200).json({ workspace });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-  res.status(200).json({ workspace });
 });
 
 router.put("/sharedWith/:workspaceId", authMiddleware, async (req, res) => {
   const { workspaceId } = req.params;
   const { email, mode } = req.body;
-
   try {
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       return res.status(400).json({ message: "Workspace not found" });
     }
     const user = await User.findOne({ email });
-    console.log(user._id.toString());
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
